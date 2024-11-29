@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medication Reminder</title>
+    <style>
+        
+        /* General Reset */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9fafc;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header Styling */
+        header {
+            background: linear-gradient(90deg, #4caf50, #009688);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        /* Container Styling */
+        .container {
+            padding: 40px 20px;
+        }
+
+        /* Form Styling */
+        form {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: auto;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        form:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        form h2 {
+            margin-bottom: 20px;
+            color: #00796b;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #4caf50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+        }
+
+        button {
+            background: #4caf50;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background: #388e3c;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Reminder Message Styling */
+        .reminder-message {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        /* Mobile Friendly */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            form {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Medication Reminder</h1>
+    </header>
+    <div class="container">
+        <form id="medication-form">
+            <h2>Set a Reminder</h2>
+            <label for="medication-name">Medication Name:</label>
+            <input type="text" id="medication-name" placeholder="Enter medication name" required>
+
+            <label for="dose">Dosage:</label>
+            <input type="text" id="dose" placeholder="e.g., 1 tablet, 5 ml" required>
+
+            <label for="time">Time of Day:</label>
+            <input type="time" id="time" required>
+
+            <button type="submit">Set Reminder</button>
+        </form>
+        <div id="reminder-display" class="reminder-message" style="display: none;"></div>
+    </div>
+    <audio id="alarm-sound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+    <script>
+        document.getElementById('medication-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get input values
+            const medicationName = document.getElementById('medication-name').value;
+            const dose = document.getElementById('dose').value;
+            const time = document.getElementById('time').value;
+
+            // Display reminder message
+            const reminderDisplay = document.getElementById('reminder-display');
+            reminderDisplay.textContent = `Reminder set for ${medicationName} (${dose}) at ${time}`;
+            reminderDisplay.style.display = 'block';
+
+            // Calculate time difference
+            const now = new Date();
+            const [hours, minutes] = time.split(':').map(Number);
+            const reminderTime = new Date();
+            reminderTime.setHours(hours, minutes, 0, 0);
+
+            const timeDifference = reminderTime - now;
+
+            if (timeDifference > 0) {
+                setTimeout(() => {
+                    const alarmSound = document.getElementById('alarm-sound');
+                    alarmSound.play();
+                    alert(`Time to take your ${medicationName} (${dose})!`);
+                }, timeDifference);
+            } else {
+                alert('The time entered is in the past. Please set a future time.');
+            }
+        });
+    </script>
+</body>
+</html>
